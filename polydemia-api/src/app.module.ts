@@ -11,8 +11,8 @@ import { UsersModule } from './users/users.module';
 @Module({
   imports: [
     ThrottlerModule.forRoot({
-      ttl: 60,
-      limit: 2,
+      ttl: 10,
+      limit: 20,
     }),
     CoursesModule,
     AuthModule,

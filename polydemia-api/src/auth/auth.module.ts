@@ -7,6 +7,7 @@ import { AuthController } from './auth.controller';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { jwtConstants } from './constants';
+import { PolicyGuard } from './policy.guard';
 import { RolesGuard } from './roles.guard';
 
 @Module({
@@ -28,6 +29,10 @@ import { RolesGuard } from './roles.guard';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: PolicyGuard,
     },
   ],
   controllers: [AuthController],
