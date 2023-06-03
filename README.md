@@ -1,1 +1,2 @@
 # Polydemia
+The ultimate learning app with a vast course catalog for academic excellence, professional development, and personal growth. Engage with interactive lessons, track progress, and connect with a vibrant learning community.
