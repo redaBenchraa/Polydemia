@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  CREATOR
+  ADMIN
+}
+
+model User {
+  id                Int            @id @default(autoincrement())
+  email             String         @unique
+  password          String
+  fistName          String
+  lastName          String
+  role              Role           @default(USER)
+  createdCourses    Course[]
+  Reviews           Review[]
+  subscribedCourses Subscription[]
+  banned            Boolean?       @default(false)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+}
+
+model Course {
+  id                  Int            @id @default(autoincrement())
+  Name                String
+  description         String?
+  rating              Float?
+  price               Float?
+  numberOfsubscribers Int?
+  Duration            Int?
+  creatorUser         User?          @relation(fields: [creatorUserId], references: [id])
+  creatorUserId       Int?
+  categories          Category[]     @relation()
+  Reviews             Review[]
+  subscribedUsers     Subscription[]
+  published           Boolean?       @default(false)
+  deleted             Boolean?       @default(false)
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String
+  courses   Course[] @relation()
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Review {
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  course    Course   @relation(fields: [courseId], references: [id])
+  courseId  Int
+  rating    Float
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([userId, courseId])
+}
+
+model Subscription {
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  course    Course   @relation(fields: [courseId], references: [id])
+  courseId  Int
+  progress  Float    @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([userId, courseId])
+}
