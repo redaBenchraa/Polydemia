@@ -32,6 +32,7 @@ export class CoursesService {
     orderBy?: Prisma.CourseOrderByWithRelationInput;
   }): Promise<Course[]> {
     const { skip, take, cursor, where, orderBy } = params;
+    console.log('where', where);
     return this.prisma.course.findMany({
       skip,
       take,

@@ -9,7 +9,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(helmet());
   app.enableCors();
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+    }),
+  );
   const config = new DocumentBuilder()
     .setTitle('Polydemia API')
     .setDescription('The Polydemia officiel API')
