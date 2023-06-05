@@ -1,12 +1,13 @@
 import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import * as redisStore from 'cache-manager-redis-store';
 import { AuthModule } from './auth/auth.module';
 import { CaslModule } from './auth/casl/casl.module';
 import { CoursesModule } from './courses/courses.module';
+import { LoggingInterceptor } from './logger.interceptor';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -32,6 +33,10 @@ import { UsersModule } from './users/users.module';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
     },
   ],
 })
