@@ -4,8 +4,8 @@ import {
   AppAbility,
   CaslAbilityFactory,
 } from 'src/auth/casl/casl-ability.factory';
+import { IsPublicRoute } from './auth.utils';
 import { CHECK_POLICIES_KEY, PolicyHandler } from './policy.decorator';
-import { IS_PUBLIC_KEY } from './public.decorator';
 
 @Injectable()
 export class PolicyGuard implements CanActivate {
@@ -15,10 +15,7 @@ export class PolicyGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
+    const isPublic = await IsPublicRoute(this.reflector, context);
     if (isPublic) {
       return true;
     }
@@ -27,10 +24,8 @@ export class PolicyGuard implements CanActivate {
         CHECK_POLICIES_KEY,
         context.getHandler(),
       ) || [];
-
     const { user } = context.switchToHttp().getRequest();
     const ability = this.caslAbilityFactory.createForUser(user);
-
     return policyHandlers.every((handler) =>
       this.executePolicyHander(handler, ability),
     );
