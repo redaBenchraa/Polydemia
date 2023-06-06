@@ -11,13 +11,14 @@ import { Request, Response } from 'express';
 import { Counter } from 'prom-client';
 import { v4 as uuidv4 } from 'uuid';
 
-export type ErrorDomain =
-  | 'users'
-  | 'categories'
-  | 'courses'
-  | 'Reviews'
-  | 'Subscriptions'
-  | 'generic';
+export enum ErrorDomain {
+  users = 'Users',
+  categories = 'Categories',
+  courses = 'Courses',
+  reviews = 'Reviews',
+  subscriptions = 'Subscriptions',
+  generic = 'Generic',
+}
 
 export class BusinessException extends Error {
   public readonly id: string;
@@ -63,7 +64,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
       status = exception.status;
     } else if (exception instanceof HttpException) {
       body = new BusinessException(
-        'generic',
+        ErrorDomain.generic,
         exception.message,
         exception.message,
         exception.getStatus(),
@@ -71,7 +72,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
       status = exception.getStatus();
     } else {
       body = new BusinessException(
-        'generic',
+        ErrorDomain.generic,
         `Internal error occurred: ${exception.message}`,
         'Internal error occurred',
         HttpStatus.INTERNAL_SERVER_ERROR,
