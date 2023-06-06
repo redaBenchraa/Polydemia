@@ -1,12 +1,17 @@
 import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { PrometheusModule } from '@willsoto/nestjs-prometheus';
+import {
+  PrometheusModule,
+  makeCounterProvider,
+} from '@willsoto/nestjs-prometheus';
 import * as redisStore from 'cache-manager-redis-store';
+import { env } from 'process';
 import { AuthModule } from './auth/auth.module';
 import { CaslModule } from './auth/casl/casl.module';
 import { CoursesModule } from './courses/courses.module';
+import { CustomExceptionFilter } from './exception.filter';
 import { LoggingInterceptor } from './logger.interceptor';
 import { UsersModule } from './users/users.module';
 
@@ -18,9 +23,9 @@ import { UsersModule } from './users/users.module';
     }),
     CacheModule.register({
       store: redisStore,
-      host: 'localhost',
-      password: 'redis',
-      port: 6379,
+      host: env.REDIS_HOST,
+      port: env.REDIS_PORT,
+      password: env.REDIS_PASSWORD,
       isGlobal: true,
     }),
     PrometheusModule.register(),
@@ -30,6 +35,15 @@ import { UsersModule } from './users/users.module';
     CaslModule,
   ],
   providers: [
+    makeCounterProvider({
+      name: 'polymdemia_api_errors',
+      help: 'Number of API errors',
+      labelNames: ['domain', 'status'],
+    }),
+    {
+      provide: APP_FILTER,
+      useClass: CustomExceptionFilter,
+    },
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,

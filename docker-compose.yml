@@ -1,5 +1,13 @@
 version: '3.8'
 services:
+  api:
+    build: ./polydemia-api
+    ports:
+      - "3000:3000"
+    depends_on:
+    - db
+    - cache
+  
   db:
     image: postgres:latest
     restart: always
@@ -10,6 +18,7 @@ services:
       - '5432:5432'
     volumes: 
       - db:/var/lib/postgresql/data
+  
   cache:
       image: redis:latest
       restart: always
@@ -18,9 +27,26 @@ services:
       command: redis-server --save 20 1 --loglevel warning --requirepass redis
       volumes: 
         - cache:/data
-      
+
+  prometheus:
+    image: prom/prometheus:v2.36.2
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./docker-compose/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command: --config.file=/etc/prometheus/prometheus.yml
+  grafana:
+    image: grafana/grafana:7.5.7
+    ports:
+      - 3001:3000
+    restart: unless-stopped
+    volumes:
+      - ./docker-compose/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - grafana-data:/var/lib/grafana
+
 volumes:
   db:
     driver: local
   cache:
     driver: local
+  grafana-data:
