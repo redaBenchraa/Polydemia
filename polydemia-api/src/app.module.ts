@@ -8,6 +8,7 @@ import {
 } from '@willsoto/nestjs-prometheus';
 import * as redisStore from 'cache-manager-redis-store';
 import { env } from 'process';
+import { appConstants } from './app.constants';
 import { AuthModule } from './auth/auth.module';
 import { CaslModule } from './auth/casl/casl.module';
 import { CoursesModule } from './courses/courses.module';
@@ -36,7 +37,7 @@ import { UsersModule } from './users/users.module';
   ],
   providers: [
     makeCounterProvider({
-      name: 'polymdemia_api_errors',
+      name: appConstants.counter_api_error_label,
       help: 'Number of API errors',
       labelNames: ['domain', 'status'],
     }),

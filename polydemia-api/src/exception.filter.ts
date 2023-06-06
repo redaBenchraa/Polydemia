@@ -10,6 +10,7 @@ import { InjectMetric } from '@willsoto/nestjs-prometheus';
 import { Request, Response } from 'express';
 import { Counter } from 'prom-client';
 import { v4 as uuidv4 } from 'uuid';
+import { appConstants } from './app.constants';
 
 export enum ErrorDomain {
   users = 'Users',
@@ -47,13 +48,12 @@ export interface ApiError {
 export class CustomExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(CustomExceptionFilter.name);
   constructor(
-    @InjectMetric('polymdemia_api_errors')
+    @InjectMetric(appConstants.counter_api_error_label)
     private readonly counter: Counter<string>,
   ) {}
   catch(exception: Error, host: ArgumentsHost) {
     let body: ApiError;
     let status: HttpStatus;
-
     if (exception instanceof BusinessException) {
       body = {
         id: exception.id,
