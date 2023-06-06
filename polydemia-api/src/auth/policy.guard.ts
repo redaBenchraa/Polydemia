@@ -3,7 +3,7 @@ import { Reflector } from '@nestjs/core';
 import {
   AppAbility,
   CaslAbilityFactory,
-} from 'src/auth/casl/casl-ability.factory';
+} from '../auth/casl/casl-ability.factory';
 import { IsPublicRoute } from './auth.utils';
 import { CHECK_POLICIES_KEY, PolicyHandler } from './policy.decorator';
 
