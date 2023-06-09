@@ -1,11 +1,10 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
-import { User } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
-import { Role } from './role.enum';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -31,7 +30,7 @@ describe('AuthService', () => {
     id: 0,
     email: 'email',
     password: bcrypt.hashSync('password', 10),
-    role: Role.admin,
+    role: Role.ADMIN,
     fistName: 'Admin',
     lastName: 'Admin',
     banned: false,

@@ -9,13 +9,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { Role } from '@prisma/client';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { SighInDto } from './dto/sign-in-dto';
 import { CheckPolicies } from './policy.decorator';
 import { PolicyGuard } from './policy.guard';
 import { Public } from './public.decorator';
-import { Role } from './role.enum';
 import { Roles } from './roles.decorator';
 import { RolesGuard } from './roles.guard';
 
@@ -38,7 +38,7 @@ export class AuthController {
   }
 
   @Get('admin')
-  @Roles(Role.admin)
+  @Roles(Role.ADMIN)
   @CheckPolicies((ability) => ability.can('read', 'User'))
   getProfileAdmin(@Request() req: any) {
     return req.user;
