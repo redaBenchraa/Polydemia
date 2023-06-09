@@ -1,3 +1,4 @@
+import { Role } from '.prisma/client';
 import { ExecutionContext, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
@@ -11,7 +12,11 @@ describe('CourseController (e2e)', () => {
     const mockGuard = {
       canActivate: (context: ExecutionContext) => {
         const request = context.switchToHttp().getRequest();
-        request.user = { user_id: 'abc123' };
+        request.user = {
+          sub: 0,
+          email: 'admin@email.com',
+          role: Role.ADMIN,
+        };
         return Promise.resolve(true);
       },
     } as AuthGuard;

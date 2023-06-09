@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import { Role } from '../auth/role.enum';
 
 @Injectable()
 export class UsersService {
@@ -10,7 +9,7 @@ export class UsersService {
       id: 0,
       email: 'admin@email.com',
       password: 'changeme',
-      role: Role.admin,
+      role: Role.ADMIN,
       fistName: 'Admin',
       lastName: 'Admin',
       banned: false,
@@ -21,7 +20,7 @@ export class UsersService {
       id: 1,
       email: 'alex@email.com',
       password: 'changeme',
-      role: Role.user,
+      role: Role.USER,
       fistName: 'Alex',
       lastName: 'Alex',
       banned: false,

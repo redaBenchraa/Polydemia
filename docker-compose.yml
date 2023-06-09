@@ -35,6 +35,7 @@ services:
     volumes:
       - ./docker-compose/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     command: --config.file=/etc/prometheus/prometheus.yml
+  
   grafana:
     image: grafana/grafana:7.5.7
     ports:
