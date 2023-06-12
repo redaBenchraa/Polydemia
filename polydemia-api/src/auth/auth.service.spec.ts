@@ -31,7 +31,7 @@ describe('AuthService', () => {
     email: 'email',
     password: bcrypt.hashSync('password', 10),
     role: Role.ADMIN,
-    fistName: 'Admin',
+    firstName: 'Admin',
     lastName: 'Admin',
     banned: false,
     createdAt: new Date(),
@@ -47,7 +47,7 @@ describe('AuthService', () => {
     });
 
     it('should throw an error if the user is not found', async () => {
-      jest.spyOn(userService, 'findOne').mockResolvedValueOnce(undefined);
+      jest.spyOn(userService, 'findOne').mockResolvedValueOnce(null);
       expect(
         async () => await service.signIn('email', 'password'),
       ).rejects.toThrow(UnauthorizedException);

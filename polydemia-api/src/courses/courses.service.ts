@@ -6,7 +6,7 @@ import { UpdateCourseDto } from './dto/update-course.dto';
 
 @Injectable()
 export class CoursesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prismaService: PrismaService) {}
 
   create(createCourseDto: CreateCourseDto) {
     return 'This action adds a new course';
@@ -32,7 +32,7 @@ export class CoursesService {
     orderBy?: Prisma.CourseOrderByWithRelationInput;
   }): Promise<Course[]> {
     const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.course.findMany({
+    return this.prismaService.course.findMany({
       skip,
       take,
       cursor,

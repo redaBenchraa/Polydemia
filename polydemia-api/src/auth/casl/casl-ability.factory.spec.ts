@@ -7,7 +7,7 @@ describe('CaslAbilityFactory', () => {
     email: 'admin@email.com',
     password: 'changeme',
     role: Role.ADMIN,
-    fistName: 'Admin',
+    firstName: 'Admin',
     lastName: 'Admin',
     banned: false,
     createdAt: new Date(),
