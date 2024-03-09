@@ -11,21 +11,18 @@ export class UsersService {
   constructor(private prismaService: PrismaService) {}
 
   async createSimpleUser(user: CreateUserDto): Promise<User | null> {
-    return this.createUser(user, Role.USER);
+    return this.create(user, Role.USER);
   }
 
   async createCreator(user: CreateUserDto): Promise<User | null> {
-    return this.createUser(user, Role.CREATOR);
+    return this.create(user, Role.CREATOR);
   }
 
   async createAdmin(user: CreateUserDto): Promise<User | null> {
-    return this.createUser(user, Role.ADMIN);
+    return this.create(user, Role.ADMIN);
   }
 
-  private async createUser(
-    user: CreateUserDto,
-    role: Role,
-  ): Promise<User | null> {
+  private async create(user: CreateUserDto, role: Role): Promise<User | null> {
     const existingUser = await this.findByEmail(user.email);
     if (existingUser !== null) {
       throw new BusinessException(
@@ -47,7 +44,7 @@ export class UsersService {
     });
   }
 
-  async updateUser(id: number, user: UpdateUserDto): Promise<User | null> {
+  async update(id: number, user: UpdateUserDto): Promise<User | null> {
     const existingUser = await this.prismaService.user.findUnique({
       where: { id },
     });

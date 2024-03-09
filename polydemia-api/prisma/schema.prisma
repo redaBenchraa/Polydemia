@@ -21,7 +21,7 @@ model User {
   lastName          String
   role              Role           @default(USER)
   createdCourses    Course[]
-  Reviews           Review[]
+  reviews           Review[]
   subscribedCourses Subscription[]
   interests         Category[]     @relation()
   banned            Boolean        @default(false)
@@ -31,17 +31,17 @@ model User {
 
 model Course {
   id                  Int            @id @default(autoincrement())
-  Name                String
+  name                String
   description         String?
   rating              Float?
   price               Float?
   numberOfsubscribers Int?
-  Duration            Int?
+  duration            Int?
   creatorUser         User?          @relation(fields: [creatorUserId], references: [id])
   creatorUserId       Int?
   categories          Category[]     @relation()
-  Lesson              Lesson[]
-  Reviews             Review[]
+  lesson              Lesson[]
+  reviews             Review[]
   subscribedUsers     Subscription[]
   published           Boolean?       @default(false)
   deleted             Boolean?       @default(false)
@@ -51,7 +51,7 @@ model Course {
 
 model Lesson {
   id          Int      @id @default(autoincrement())
-  Name        String
+  name        String
   description String?
   imageUrl    String?
   videoUrl    String?
@@ -66,7 +66,7 @@ model Lesson {
 
 model Category {
   id        Int      @id @default(autoincrement())
-  name      String
+  name      String   @unique
   courses   Course[] @relation()
   users     User[]   @relation()
   createdAt DateTime @default(now())

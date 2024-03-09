@@ -15,6 +15,7 @@ import { CoursesModule } from './courses/courses.module';
 import { CustomExceptionFilter } from './exception.filter';
 import { LoggingInterceptor } from './logger.interceptor';
 import { UsersModule } from './users/users.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { UsersModule } from './users/users.module';
     AuthModule,
     UsersModule,
     CaslModule,
+    CategoriesModule,
   ],
   providers: [
     makeCounterProvider({

@@ -20,10 +20,6 @@ export class CoursesService {
     return `This action updates a #${id} course`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} course`;
-  }
-
   async findAll(params: {
     skip?: number;
     take?: number;

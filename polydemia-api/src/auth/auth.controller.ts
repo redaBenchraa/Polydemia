@@ -32,14 +32,9 @@ export class AuthController {
     return this.authService.signIn(signInDto.email, signInDto.password);
   }
 
-  @Get('profile')
-  getProfile(@Request() req: any) {
-    return req.user;
-  }
-
-  @Get('admin')
   @Roles(Role.ADMIN)
   @CheckPolicies((ability) => ability.can('read', 'User'))
+  @Get('admin')
   getProfileAdmin(@Request() req: any) {
     return req.user;
   }

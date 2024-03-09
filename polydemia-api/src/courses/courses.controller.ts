@@ -2,8 +2,9 @@ import { CacheInterceptor } from '@nestjs/cache-manager';
 import {
   Body,
   Controller,
-  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -11,20 +12,28 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { Course } from '@prisma/client';
+import { Course, Role } from '@prisma/client';
 import { AuthGuard } from '../auth/auth.guard';
+import { CheckPolicies } from '../auth/policy.decorator';
+import { PolicyGuard } from '../auth/policy.guard';
+import { Public } from '../auth/public.decorator';
+import { Roles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 
 @ApiBearerAuth()
 @UseInterceptors(CacheInterceptor)
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, PolicyGuard, RolesGuard)
 @Controller('courses')
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
+  @HttpCode(HttpStatus.OK)
+  @Public()
   @Get()
   async findAll(
     @Query('name') name?: string,
@@ -32,12 +41,14 @@ export class CoursesController {
   ): Promise<Course[]> {
     return this.coursesService.findAll({
       where: {
-        Name: { contains: name },
+        name: { contains: name },
       },
       take: take ? +take : undefined,
     });
   }
 
+  @HttpCode(HttpStatus.CREATED)
+  @Roles(Role.CREATOR, Role.ADMIN)
   @Post()
   create(@Body() createCourseDto: CreateCourseDto) {
     return this.coursesService.create(createCourseDto);
@@ -48,13 +59,11 @@ export class CoursesController {
     return this.coursesService.findOne(+id);
   }
 
+  @HttpCode(HttpStatus.OK)
+  @Roles(Role.CREATOR, Role.ADMIN)
+  @CheckPolicies((ability) => ability.can('update', 'Course'))
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
     return this.coursesService.update(+id, updateCourseDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.coursesService.remove(+id);
   }
 }

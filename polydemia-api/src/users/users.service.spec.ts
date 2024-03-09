@@ -7,7 +7,7 @@ import { UpdateUserDto } from './dto/update-user-dto';
 import { UsersService } from './users.service';
 
 describe('UsersService', () => {
-  let usersService: UsersService;
+  let service: UsersService;
   const prismaService = {
     user: {
       findUnique: jest.fn().mockResolvedValue({}),
@@ -36,22 +36,20 @@ describe('UsersService', () => {
         },
       ],
     }).compile();
-    usersService = module.get<UsersService>(UsersService);
+    service = module.get<UsersService>(UsersService);
   });
 
   it('should be defined', () => {
-    expect(usersService).toBeDefined();
+    expect(service).toBeDefined();
   });
 
   it('should create new simple user', async () => {
     jest.spyOn(prismaService.user, 'findUnique').mockResolvedValueOnce(null);
     jest.spyOn(prismaService.user, 'create').mockResolvedValueOnce(mockUser);
 
-    const newUser = await usersService.createSimpleUser(mockUser);
+    const newUser = await service.createSimpleUser(mockUser);
 
-    expect(prismaService.user.create.mock.calls[0][0].data.role).toBe(
-      Role.USER,
-    );
+    expect(prismaService.user.create.mock.calls[0][0].data).toBe(Role.USER);
     expect(newUser).toStrictEqual(mockUser);
   });
 
@@ -59,10 +57,10 @@ describe('UsersService', () => {
     jest.spyOn(prismaService.user, 'findUnique').mockResolvedValueOnce(null);
     jest.spyOn(prismaService.user, 'create').mockResolvedValueOnce(mockUser);
 
-    const newUser = await usersService.createCreator(mockUser);
-    expect(prismaService.user.create.mock.calls[0][0].data.role).toBe(
-      Role.CREATOR,
-    );
+    const newUser = await service.createCreator(mockUser);
+    expect(prismaService.user.create.mock.calls[0][0].data).toMatchObject({
+      role: Role.CREATOR,
+    });
     expect(newUser).toStrictEqual(mockUser);
   });
 
@@ -70,11 +68,11 @@ describe('UsersService', () => {
     jest.spyOn(prismaService.user, 'findUnique').mockResolvedValueOnce(null);
     jest.spyOn(prismaService.user, 'create').mockResolvedValueOnce(mockUser);
 
-    const newUser = await usersService.createAdmin(mockUser);
+    const newUser = await service.createAdmin(mockUser);
 
-    expect(prismaService.user.create.mock.calls[0][0].data.role).toBe(
-      Role.ADMIN,
-    );
+    expect(prismaService.user.create.mock.calls[0][0].data).toMatchObject({
+      role: Role.ADMIN,
+    });
     expect(newUser).toStrictEqual(mockUser);
   });
 
@@ -84,8 +82,7 @@ describe('UsersService', () => {
       .mockResolvedValueOnce(mockUser);
 
     expect(
-      async () =>
-        await usersService.createSimpleUser(mockUser as CreateUserDto),
+      async () => await service.createSimpleUser(mockUser as CreateUserDto),
     ).rejects.toThrow(BusinessException);
   });
 
@@ -96,7 +93,7 @@ describe('UsersService', () => {
     jest.spyOn(prismaService.user, 'update').mockResolvedValueOnce(mockUser);
 
     const dto: UpdateUserDto = { firstName: 'alex', lastName: '42' };
-    const updatedUser = await usersService.updateUser(1, dto);
+    const updatedUser = await service.update(1, dto);
 
     expect(prismaService.user.update.mock.calls[0][0].data).toMatchObject(dto);
     expect(updatedUser).toStrictEqual(mockUser);
@@ -105,9 +102,9 @@ describe('UsersService', () => {
   it('should throw an error when updating if user doesnt exist exists', async () => {
     jest.spyOn(prismaService.user, 'findUnique').mockResolvedValueOnce(null);
 
-    expect(
-      async () => await usersService.updateUser(1, {} as any),
-    ).rejects.toThrow(BusinessException);
+    expect(async () => await service.update(1, {} as any)).rejects.toThrow(
+      BusinessException,
+    );
   });
 
   it('should find user by email', async () => {
@@ -115,6 +112,6 @@ describe('UsersService', () => {
       .spyOn(prismaService.user, 'findUnique')
       .mockResolvedValueOnce(mockUser);
 
-    expect(await usersService.findByEmail('email')).toStrictEqual(mockUser);
+    expect(await service.findByEmail('email')).toStrictEqual(mockUser);
   });
 });

@@ -19,12 +19,12 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Course" (
     "id" SERIAL NOT NULL,
-    "Name" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
     "description" TEXT,
     "rating" DOUBLE PRECISION,
     "price" DOUBLE PRECISION,
     "numberOfsubscribers" INTEGER,
-    "Duration" INTEGER,
+    "duration" INTEGER,
     "creatorUserId" INTEGER,
     "published" BOOLEAN DEFAULT false,
     "deleted" BOOLEAN DEFAULT false,
@@ -37,7 +37,7 @@ CREATE TABLE "Course" (
 -- CreateTable
 CREATE TABLE "Lesson" (
     "id" SERIAL NOT NULL,
-    "Name" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
     "description" TEXT,
     "imageUrl" TEXT,
     "videoUrl" TEXT,
@@ -98,6 +98,9 @@ CREATE TABLE "_CategoryToUser" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_CategoryToCourse_AB_unique" ON "_CategoryToCourse"("A", "B");

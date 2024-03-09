@@ -1,12 +1,19 @@
 import { createMock } from '@golevelup/ts-jest';
 import { CacheInterceptor } from '@nestjs/cache-manager';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Course } from '@prisma/client';
 import { CoursesController } from './courses.controller';
 import { CoursesService } from './courses.service';
 
 describe('CoursesController', () => {
   let controller: CoursesController;
   let service: CoursesService;
+  const mockCourse = {
+    id: 1,
+    name: 'Course 1',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  } as Course;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CoursesController],
@@ -26,17 +33,7 @@ describe('CoursesController', () => {
   });
 
   it('should return all courses', async () => {
-    const result = [
-      {
-        id: 2,
-        Name: 'Course 2',
-        Description: 'Course 2 Description',
-        ImageUrl: 'Course 2 ImageUrl',
-        CreatedAt: new Date(),
-        UpdatedAt: new Date(),
-      },
-    ] as any;
-    jest.spyOn(service, 'findAll').mockResolvedValueOnce(result);
-    expect(await controller.findAll()).toStrictEqual(result);
+    jest.spyOn(service, 'findAll').mockResolvedValueOnce([mockCourse]);
+    expect(await controller.findAll()).toStrictEqual([mockCourse]);
   });
 });
